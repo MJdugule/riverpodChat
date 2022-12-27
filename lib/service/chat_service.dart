@@ -56,6 +56,7 @@ class ChatService {
         .collection("chats")
         .doc(receiverId)
         .collection("messages")
+        .orderBy("timeSent")
         .snapshots()
         .asyncMap((event) async {
       List<ConversationModel> messages = [];

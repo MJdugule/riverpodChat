@@ -51,7 +51,8 @@ class _ConversationListState extends ConsumerState<ConversationList> {
             }
             return SenderMessageCard(
               message: conversationDetails.text,
-              date: timeSent
+              date: timeSent,
+              type: conversationDetails.type,
             );
           },
         );

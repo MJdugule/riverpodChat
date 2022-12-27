@@ -21,3 +21,16 @@ Future<File?> pickImage(BuildContext context) async {
   }
   return image;
 }
+
+Future<File?> pickVideo(BuildContext context) async {
+  File? video;
+  try {
+    final pickedVideo = await ImagePicker().pickVideo(source: ImageSource.gallery);
+    if (pickedVideo != null) {
+      video = File(pickedVideo.path);
+    }
+  } catch (e) {
+    showSnackBar(context: context, content: e.toString());
+  }
+  return video;
+}
