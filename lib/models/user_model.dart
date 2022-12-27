@@ -14,7 +14,7 @@ class UserModel{
       "uid" : uid,
       "profilePic" : profilePic,
       "isOnline" : isOnline,
-      "phoneNumber" : phoneNo,
+      "phoneNo" : phoneNo,
       "groupId" : groupId
     };
   }

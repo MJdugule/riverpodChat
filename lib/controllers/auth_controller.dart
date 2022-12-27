@@ -36,4 +36,12 @@ class AuthController{
     UserModel? user = await authService.getUserData();
     return user;
   }
+
+  Stream<UserModel> userDataById(String userId){
+    return authService.userStatus(userId);
+  }
+
+  void  setUserStatus(bool isOnline){
+    authService.setUserStatus(isOnline);
+  }
 }

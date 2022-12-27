@@ -77,7 +77,7 @@ class AuthService {
           uid: uid,
           profilePic: photoUrl,
           isOnline: true,
-          phoneNo: auth.currentUser!.uid,
+          phoneNo: auth.currentUser!.phoneNumber!,
           groupId: []);
 
        await   firestore.collection("user").doc(uid).set(user.toMap());
@@ -96,5 +96,16 @@ class AuthService {
       user = UserModel.fromMap(userData.data()!);
     }
     return user;
+  }
+
+  Stream<UserModel> userStatus(String userId){
+    return firestore.collection("user").doc(userId).snapshots().map((event) => UserModel.fromMap(event.data()!));
+  }
+
+  void setUserStatus(bool isOnline) async{
+    await firestore.collection("user").doc(auth.currentUser!.uid).update({
+      "isOnline" : isOnline
+    });
+
   }
 }

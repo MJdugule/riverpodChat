@@ -31,54 +31,56 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         elevation: 0,
         title: const Text("Input your phone number"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Text("We will need to verify your number"),
-            const SizedBox(
-              height: 10,
-            ),
-            TextButton(onPressed: () {
-              showCountryPicker(context: context, onSelect: (Country _country){
-                setState(() {
-                  country = _country;
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text("We will need to verify your number"),
+              const SizedBox(
+                height: 10,
+              ),
+              TextButton(onPressed: () {
+                showCountryPicker(context: context, onSelect: (Country _country){
+                  setState(() {
+                    country = _country;
+                  });
                 });
-              });
-            }, child: const Text("Select Country")),
-            const SizedBox(
-              height: 5,
-            ),
-            Row(
-              children: [
-                if(country !=null)
-                 Text("+${country!.phoneCode}"),
-                const SizedBox(
-                  width: 10,
-                ),
-                SizedBox(
-                  width: size.width * 0.7,
-                  child: TextField(
-                    controller: phoneController,
-                    decoration:  const InputDecoration(
-                      hintText: 'phone number'
+              }, child: const Text("Select Country")),
+              const SizedBox(
+                height: 5,
+              ),
+              Row(
+                children: [
+                  if(country !=null)
+                   Text("+${country!.phoneCode}"),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  SizedBox(
+                    width: size.width * 0.7,
+                    child: TextField(
+                      controller: phoneController,
+                      decoration:  const InputDecoration(
+                        hintText: 'phone number'
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: size.height * 0.6,),
-            SizedBox(
-              width: 90,
-              child: AppButton(text: "NEXT", onPressed: (){
-                String phoneNumber = phoneController.text.trim();
-                if(country != null && phoneNumber.isNotEmpty){
-                  ref.read(authProvider).signInWithPhone(context, "+${country!.phoneCode}$phoneNumber");
-                }
-              }),
-            )
-          ],
+                ],
+              ),
+              SizedBox(height: size.height * 0.6,),
+              SizedBox(
+                width: 90,
+                child: AppButton(text: "NEXT", onPressed: (){
+                  String phoneNumber = phoneController.text.trim();
+                  if(country != null && phoneNumber.isNotEmpty){
+                    ref.read(authProvider).signInWithPhone(context, "+${country!.phoneCode}$phoneNumber");
+                  }
+                }),
+              )
+            ],
+          ),
         ),
       ),
     );
