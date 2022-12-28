@@ -45,4 +45,12 @@ class ChatController {
         ref: ref
         ));
   }
+
+  void updateSeenStatus(
+    BuildContext context,
+    String receiverId,
+    String messageId
+  ){
+    chatService.updateSeenStatus(receiverId, context, messageId);
+  }
 }

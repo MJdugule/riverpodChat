@@ -1,7 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:whatsapp_ui/res/utils/enums.dart';
 import 'package:whatsapp_ui/res/widget/video_player_card.dart';
 
@@ -17,8 +15,14 @@ class DisplayChatType extends StatelessWidget {
             message,
             style: const TextStyle(fontSize: 16),
           )
-        : type == ChatEnum.video
-            ? VideoPlayerCard(videoUrl: message)
-            : CachedNetworkImage(imageUrl: message);
+        : type == ChatEnum.audio
+            ? IconButton(
+              constraints: const BoxConstraints(
+                minWidth: 120
+              ),
+              onPressed: () {}, icon: const Icon(Icons.play_circle))
+            : type == ChatEnum.video
+                ? VideoPlayerCard(videoUrl: message)
+                : CachedNetworkImage(imageUrl: message);
   }
 }

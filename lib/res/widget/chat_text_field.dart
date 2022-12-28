@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_sound/public/flutter_sound_recorder.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:whatsapp_ui/colors.dart';
 import 'package:whatsapp_ui/controllers/chat_controller.dart';
 import 'package:whatsapp_ui/res/utils/enums.dart';
@@ -24,6 +27,34 @@ class _ChatTextFieldState extends ConsumerState<ChatTextField> {
   bool showEmoji = false;
   FocusNode focusNode = FocusNode();
   final TextEditingController messageController = TextEditingController();
+  FlutterSoundRecorder? soundRecorder;
+  bool isRecordingInit = false;
+  bool isRecording = false;
+
+  @override
+  void initState() {
+    super.initState();
+    soundRecorder = FlutterSoundRecorder();
+    openAudio();
+  }
+
+  void openAudio() async {
+    final status = await Permission.microphone.request();
+    if(status != PermissionStatus.granted){
+      throw RecordingPermissionException("Mic permission not allowed");
+    }
+    await soundRecorder!.openRecorder();
+    isRecordingInit = true;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    messageController.dispose();
+    soundRecorder!.closeRecorder();
+    isRecordingInit = false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -136,16 +167,37 @@ class _ChatTextFieldState extends ConsumerState<ChatTextField> {
                   backgroundColor: const Color(0xFF128C7E),
                   radius: 25,
                   child: Icon(
-                    isShowSend ? Icons.send : Icons.mic,
+                    isShowSend ? Icons.send : isRecording ? Icons.close : Icons.mic,
                     color: Colors.white,
                   ),
                 ),
-                onTap: () {
+                onTap: () async {
                   if (isShowSend) {
                     ref.read(chatControllerProvider).sendTextMessage(
                         context, messageController.text.trim(), widget.receiverUid);
                     setState(() {
                       messageController.clear();
+                    });
+                  }else{
+                    var tempDir = await getTemporaryDirectory();
+                    var path = "${tempDir.path}/flutter_sound.aac";
+                    if(!isRecording){
+                      return;
+                    }
+                    if (isRecording) {
+                      await soundRecorder!.stopRecorder();
+                       ref.read(chatControllerProvider).sendFileMessage(
+                                  context,
+                                  File(path),
+                                  widget.receiverUid,
+                                  ChatEnum.audio);
+                    }else{
+                      await soundRecorder!.startRecorder(
+                        toFile: path,
+                      );
+                    }
+                    setState(() {
+                      isRecording = !isRecording;
                     });
                   }
                 },
@@ -156,6 +208,7 @@ class _ChatTextFieldState extends ConsumerState<ChatTextField> {
        showEmoji ? SizedBox(
           height: 310,
           child: EmojiPicker(
+            config: const Config(enableSkinTones: true),
             onEmojiSelected: (category, emoji) {
               setState(() {
                 messageController.text = messageController.text+emoji.emoji;

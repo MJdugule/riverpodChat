@@ -42,11 +42,15 @@ class _ConversationListState extends ConsumerState<ConversationList> {
           itemBuilder: (context, index) {
             final conversationDetails = snapshot.data![index];
             var timeSent = DateFormat.Hm().format(conversationDetails.timeSent);
+            if(!conversationDetails.isSeen && conversationDetails.receiverId == FirebaseAuth.instance.currentUser!.uid){
+              ref.read(chatControllerProvider).updateSeenStatus(context, widget.receiverId, conversationDetails.messageId);
+            }
             if (conversationDetails.senderId == FirebaseAuth.instance.currentUser!.uid) {
               return MyMessageCard(
                 message: conversationDetails.text,
                 date: timeSent,
                 type: conversationDetails.type,
+                isSeen: conversationDetails.isSeen
               );
             }
             return SenderMessageCard(

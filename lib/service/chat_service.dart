@@ -218,4 +218,36 @@ class ChatService {
       showSnackBar(context: context, content: e.toString());
     }
   }
+
+  void updateSeenStatus(
+    String receiverId,
+    BuildContext context,
+    String messageId
+  ) async {
+    try {
+      await firestore
+        .collection("user")
+        .doc(auth.currentUser!.uid)
+        .collection("chats")
+        .doc(receiverId)
+        .collection("messages")
+        .doc(messageId)
+        .update({
+          "isSeen" : true
+        });
+
+    await firestore
+        .collection("user")
+        .doc(receiverId)
+        .collection("chats")
+        .doc(auth.currentUser!.uid)
+        .collection("messages")
+        .doc(messageId)
+        .update({
+          "isSeen" : true
+        });
+    } catch (e) {
+      showSnackBar(context: context, content: e.toString());
+    }
+  }
 }

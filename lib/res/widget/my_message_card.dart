@@ -7,8 +7,15 @@ class MyMessageCard extends StatelessWidget {
   final String message;
   final String date;
   final ChatEnum type;
+  final bool isSeen;
 
-  const MyMessageCard({Key? key, required this.message, required this.date, required this.type}) : super(key: key);
+  const MyMessageCard(
+      {Key? key,
+      required this.message,
+      required this.date,
+      required this.type,
+      required this.isSeen})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,18 +33,19 @@ class MyMessageCard extends StatelessWidget {
           child: Stack(
             children: [
               Padding(
-                padding: type == ChatEnum.text? const EdgeInsets.only(
-                  left: 10,
-                  right: 30,
-                  top: 5,
-                  bottom: 20,
-                ):const EdgeInsets.only(
-                  left: 3,
-                  right: 3,
-                  top: 3,
-                  bottom: 3),
-                child: DisplayChatType(message: message, type: type,)
-              ),
+                  padding: type == ChatEnum.text
+                      ? const EdgeInsets.only(
+                          left: 10,
+                          right: 30,
+                          top: 5,
+                          bottom: 20,
+                        )
+                      : const EdgeInsets.only(
+                          left: 3, right: 3, top: 3, bottom: 3),
+                  child: DisplayChatType(
+                    message: message,
+                    type: type,
+                  )),
               Positioned(
                 bottom: 4,
                 right: 10,
@@ -45,7 +53,7 @@ class MyMessageCard extends StatelessWidget {
                   children: [
                     Text(
                       date,
-                      style:const TextStyle(
+                      style: const TextStyle(
                         fontSize: 13,
                         color: Colors.white60,
                       ),
@@ -53,10 +61,10 @@ class MyMessageCard extends StatelessWidget {
                     const SizedBox(
                       width: 5,
                     ),
-                    const Icon(
-                      Icons.done_all,
+                     Icon(
+                     isSeen ? Icons.done_all : Icons.done,
                       size: 20,
-                      color: Colors.white60,
+                      color: isSeen ? Colors.blue: Colors.white60,
                     ),
                   ],
                 ),

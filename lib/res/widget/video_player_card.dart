@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:video_cached_player/video_cached_player.dart';
 
 class VideoPlayerCard extends StatefulWidget {
